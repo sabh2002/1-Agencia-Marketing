@@ -1,9 +1,10 @@
 from pathlib import Path
 import os
-import environ #Guarda datos vulnerables en una variable de entorno
+import environ
 
 env = environ.Env()
 environ.Env.read_env()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -13,17 +14,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY') #Busca la clave secreta en .env
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG')#Determina si estamos en prueba o en produccion desde .env
+DEBUG = os.environ.get('DEBUG')
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS_DEV')
 
 
 # Application definition
-
-#INSTALLED APPS
 DJANGO_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -33,7 +32,6 @@ DJANGO_APPS = [
     'django.contrib.staticfiles',
 ]
 
-#Aplicaciones de proyecto
 PROJECT_APPS = [
 
 ]
@@ -42,12 +40,12 @@ THIRD_PARTY_APPS = [
     'corsheaders',
     'rest_framework',
     'ckeditor',
-    'ckeditor_uploader',
-
+    'ckeditor_uploader'
 ]
 
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
 
+#CKEditor
 CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': 'Custom',
@@ -60,13 +58,11 @@ CKEDITOR_CONFIGS = {
         'autoParagraph': False
     }
 }
-
 CKEDITOR_UPLOAD_PATH = "/media/"
 
 
-
 MIDDLEWARE = [
-    'corsheader.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -81,7 +77,7 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'build')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -129,23 +125,16 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
-
 LANGUAGE_CODE = 'es'
-
-TIME_ZONE = 'GMT-4'
-
+TIME_ZONE = 'America/Caracas'
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
-
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-
 STATIC_URL = '/static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -162,7 +151,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-    'rest_framework.permission.IsAuthenticatedOrReadOnly'
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly'
     ],
 }
 
@@ -172,13 +161,12 @@ CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS_DEV')
 EMAIL_BACKEND='django.core.mail.backends.console.EmailBackend'
 
 if not DEBUG:
-    ALLOWED_HOSTS = env.list('ALLOWED_HOSTS_DEPLOY')
+    ALLOWED_HOSTS=env.list('ALLOWED_HOSTS_DEPLOY')
     CORS_ORIGIN_WHITELIST = env.list('CORS_ORIGIN_WHITELIST_DEPLOY')
     CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS_DEPLOY')
 
 
     DATABASES = {
-        "default":env.db("DATABASE_URL"),
-
+        "default": env.db("DATABASE_URL"),
     }
-    DATABASES["default"]["ATOMIC_REQUEST"] = True #Evita llamados duplicados a la base de datos
+    DATABASES["default"]["ATOMIC_REQUESTS"] = True
